@@ -6,8 +6,7 @@ export default function SignUpPage() {
       className="flex items-center justify-center min-h-screen bg-base-100"
       data-theme="dark"
       style={{
-        backgroundImage: `url('/bgmain
-        .jpg')`, // Background image
+        backgroundImage: `url('/bgmain.jpg')`, 
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
