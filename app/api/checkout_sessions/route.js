@@ -1,38 +1,33 @@
-import { NextResponse } from "next/server"
-import Stripe from "stripe"
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+// api/checkout_sessions/route.js
+import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
 
-const formatAmountForStripe = (amount) => {
-    return Math.round(amount*100)
-}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export async function POST(req) {
-
-    const params = {
-        submit_type: 'subscription',
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-                currency: 'usd',
-                product_data: {
-                    name: 'Pro Subscription',
-                },
-                unit_amount: formatAmountForStripe(10),
-                recurring: {
-                    interval: 'month',
-                    interval_count: 1,
-                }
+export async function POST() {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Premium Plan',
             },
-            quantity: 1,
+            unit_amount: 200, // $2.00
           },
-        ],
-        success_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
-    };
-    const checkoutSession = await stripe.checkout.sessions.create(params);
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/canceled`,
+    });
 
-    return NextResponse.json(checkoutSession, {
-        status: 200,
-    })
+    return NextResponse.json({ id: session.id });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    return NextResponse.error();
+  }
 }
