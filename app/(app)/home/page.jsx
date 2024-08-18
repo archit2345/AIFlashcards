@@ -1,36 +1,41 @@
 'use client';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-import { useEffect, useState } from 'react';
-import { auth, firestore } from '@/utils/firebase'; // Adjusted import
-import { doc, updateDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useState } from 'react';
+import firebase from '@/utils/firebase'; // Ensure Firebase is set up correctly
+import Stack from '@mui/material/Stack';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const [plan, setPlan] = useState(null);
-  const [user, setUser] = useState(null);
-
-  // Listen for authentication state changes
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
 
   const handlePlanSelect = async (selectedPlan) => {
-    if (user) {
-      try {
-        // Update user's plan in Firestore
-        const userDocRef = doc(firestore, 'users', user.uid);
-        await updateDoc(userDocRef, {
+    try {
+      // Update user's plan in Firebase
+      const user = firebase.auth().currentUser;
+      if (user) {
+        await firebase.firestore().collection('users').doc(user.uid).update({
           plan: selectedPlan,
         });
         setPlan(selectedPlan);
-      } catch (error) {
-        console.error('Error updating plan:', error);
       }
+    } catch (error) {
+      console.error('Error updating plan:', error);
     }
   };
+
+  // function createNewFlashcard() {
+  //   const navigate = useNavigate();
+  
+  //   const handleRedirect = () => {
+  //     navigate('/flashcard');
+  //   };
+  
+  // }
+  const handleRedirect = () => {
+    console.log(window.location.href)
+    window.location.href = "/home/flashcard"
+  };
+
 
   return (
     <div className="text-center my-16">
@@ -47,12 +52,23 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold">Create Flashcards</h2>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded mt-6">
-            Create Now
-          </button>
-        </div>
+        <Stack direction="row" spacing={10} justifyContent="center" sx={{ mt: 10 }}>
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold">My Flashcards</h2>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded mt-6">
+              View All
+            </button>
+          </div>
+
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold">Create Flashcards</h2>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded mt-6" onClick={handleRedirect}>
+              Create Now
+            </button>
+            {/* <createNewFlashcard></createNewFlashcard> */}
+          </div>
+
+        </Stack>
       </SignedIn>
 
       <SignedOut>
