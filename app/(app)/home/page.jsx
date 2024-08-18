@@ -1,23 +1,34 @@
 'use client';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-import { useState } from 'react';
-import firebase from '@/utils/firebase'; // Ensure Firebase is set up correctly
+import { useEffect, useState } from 'react';
+import { auth, firestore } from '@/utils/firebase'; // Adjusted import
+import { doc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Dashboard() {
   const [plan, setPlan] = useState(null);
+  const [user, setUser] = useState(null);
+
+  // Listen for authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handlePlanSelect = async (selectedPlan) => {
-    try {
-      // Update user's plan in Firebase
-      const user = firebase.auth().currentUser;
-      if (user) {
-        await firebase.firestore().collection('users').doc(user.uid).update({
+    if (user) {
+      try {
+        // Update user's plan in Firestore
+        const userDocRef = doc(firestore, 'users', user.uid);
+        await updateDoc(userDocRef, {
           plan: selectedPlan,
         });
         setPlan(selectedPlan);
+      } catch (error) {
+        console.error('Error updating plan:', error);
       }
-    } catch (error) {
-      console.error('Error updating plan:', error);
     }
   };
 
