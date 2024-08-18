@@ -3,31 +3,35 @@ import { SignedIn, SignedOut } from '@clerk/nextjs';
 
 export default function HomePage() {
   return (
-    <div className="text-center my-16">
-      <h1 className="text-4xl font-bold">Welcome to AceCards</h1>
-      <p className="text-xl mt-4">Create and manage your flashcards with ease!</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500 text-white text-center p-8">
+      <h1 className="text-5xl font-extrabold mb-4">Welcome to AceCards</h1>
+      <p className="text-2xl mb-8">Create and manage your flashcards with ease!</p>
       
       <SignedOut>
-        <div className="mt-6">
+        <div className="flex space-x-4 mb-8">
           <Link href="/sign-in">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded mx-2">Login</button>
+            <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-300">
+              Login
+            </button>
           </Link>
           <Link href="/sign-up">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded mx-2">Sign Up</button>
+            <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-300">
+              Sign Up
+            </button>
           </Link>
         </div>
       </SignedOut>
       
       <SignedIn>
-        <p className="mt-6">You are already logged in.</p>
+        <p className="text-lg">You are already logged in.</p>
       </SignedIn>
       
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold">Features</h2>
-        <ul className="list-disc list-inside mt-4">
-          <li>Easy creation of flashcards</li>
-          <li>Organize your notes efficiently</li>
-          <li>Track your progress</li>
+      <div className="mt-16">
+        <h2 className="text-3xl font-bold mb-4">Features</h2>
+        <ul className="text-left space-y-2 text-xl">
+          <li>✅ Easy creation of flashcards</li>
+          <li>✅ Organize your notes efficiently</li>
+          <li>✅ Track your progress</li>
         </ul>
       </div>
     </div>
