@@ -4,30 +4,30 @@ import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export async function POST() {
-  try {
-    const session = await stripe.checkout.sessions.create({
+export async function POST(request) {
+  const { plan, userEmail } = await request.json();
+
+  let session;
+  if (plan === 'premium') {
+    session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      mode: 'subscription',
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Premium Plan',
-            },
-            unit_amount: 200, // $2.00
-          },
+          price: process.env.NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID,
           quantity: 1,
         },
       ],
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/canceled`,
+      customer_email: userEmail,
+      success_url: `${process.env.NEXT_PUBLIC_URL}/result/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_URL}`,
     });
-
-    return NextResponse.json({ id: session.id });
-  } catch (error) {
-    console.error('Error creating checkout session:', error);
-    return NextResponse.error();
+  } else if (plan === 'basic') {
+    return NextResponse.json({message: "Basic plan selected succcessfully."});
+  } else {
+    return NextResponse.json({ error: "Invalid plan selected." }, { status: 400 });
   }
+
+  return NextResponse.json({ id: session.id });
 }
+
