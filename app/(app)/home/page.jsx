@@ -3,10 +3,11 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useState } from 'react';
 import firebase from '@/utils/firebase'; // Ensure Firebase is set up correctly
 import Stack from '@mui/material/Stack';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
   const [plan, setPlan] = useState(null);
+  const router = useRouter();
 
   const handlePlanSelect = async (selectedPlan) => {
     try {
@@ -32,8 +33,7 @@ export default function Dashboard() {
   
   // }
   const handleRedirect = () => {
-    console.log(window.location.href)
-    window.location.href = "/home/flashcard"
+    router.push('/home/flashcard');
   };
 
 
@@ -77,3 +77,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
