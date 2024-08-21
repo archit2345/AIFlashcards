@@ -6,6 +6,7 @@ import { Stack, Button, Typography, Box } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { AuroraBackground } from '@/components/ui/aurora-background';
+import Link from 'next/link';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
@@ -75,10 +76,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleRedirect = () => {
-    router.push('/home/flashcard');
-  };
-
   return (
     <AuroraBackground>
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
@@ -125,52 +122,50 @@ export default function Dashboard() {
           </Typography>
 
           <Stack
-  direction="row"
-  spacing={4}
-  justifyContent="center"
-  alignItems="center" // Align items vertically in the center
-  sx={{ mt: 4, width: '100%' }} // Set width to 100% for proper alignment
->
-  <Box textAlign="center"> {/* Center text within each box */}
-    <Typography variant="h4" component="h2" sx={{ color: '#000' }}>
-      My Flashcards
-    </Typography>
-    <Button
-      variant="contained"
-      color="primary"
-      sx={{
-        fontSize: '16px',
-        fontWeight: 'bold',
-        color: '#000',
-        mt: 2,
-        width: '220px', // Ensure consistent width with other buttons
-      }}
-      onClick={() => handleRedirect('/home/my-flashcards')}
-    >
-      VIEW ALL
-    </Button>
-  </Box>
+            direction="row"
+            spacing={4}
+            justifyContent="center"
+            alignItems="center" // Align items vertically in the center
+            sx={{ mt: 4, width: '100%' }} // Set width to 100% for proper alignment
+          >
+            <Box textAlign="center"> {/* Center text within each box */}
+              <Typography variant="h4" component="h2" sx={{ color: '#000' }}>
+                My Flashcards
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  color: '#000',
+                  mt: 2,
+                  width: '220px', // Ensure consistent width with other buttons
+                }}
+              >
+                <Link href="/home/flashcard">VIEW ALL</Link>
+              </Button>
+            </Box>
 
-  <Box textAlign="center"> {/* Center text within each box */}
-    <Typography variant="h4" component="h2" sx={{ color: '#000' }}>
-      Create Flashcards
-    </Typography>
-    <Button
-      variant="contained"
-      color="primary"
-      sx={{
-        fontSize: '16px',
-        fontWeight: 'bold',
-        color: '#000',
-        mt: 2,
-        width: '220px', // Ensure consistent width with other buttons
-      }}
-      onClick={handleRedirect}
-    >
-      CREATE NOW
-    </Button>
-  </Box>
-</Stack>
+            <Box textAlign="center"> {/* Center text within each box */}
+              <Typography variant="h4" component="h2" sx={{ color: '#000' }}>
+                Create Flashcards
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  color: '#000',
+                  mt: 2,
+                  width: '220px', // Ensure consistent width with other buttons
+                }}
+              >
+                <Link href="/home/flashcard">CREATE NOW</Link>
+              </Button>
+            </Box>
+          </Stack>
 
         </SignedIn>
 
