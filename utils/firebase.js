@@ -19,9 +19,16 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const firestore = getFirestore(app);
+let app;
+let analytics;
+let auth;
+let firestore;
+
+if (typeof window !== 'undefined') {
+  app = initializeApp(firebaseConfig);
+  analytics = getAnalytics(app);
+  auth = getAuth(app);
+  firestore = getFirestore(app);
+}
 
 export { auth, firestore, collection, doc, getDoc, setDoc, updateDoc };
